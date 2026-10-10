@@ -76,6 +76,10 @@ class DecisionEngine:
             baseline_cost_usd=BASELINE_COST_USD,
             cost_reduction_percent=0.0,
             pricing_source="OpenAI DALL-E 3 Published Pricing: HD 1024x1792 ($0.080)",
+            calculation_explanation=(
+                f"Baseline configuration: HD quality tier at ${BASELINE_COST_USD:.3f}/image (standard district legacy default). "
+                "No resource reduction applied."
+            ),
             latency_seconds=None,
         )
         return EngineDecision(configuration=config, rationale=rationale, metrics=metrics)
@@ -165,6 +169,12 @@ class DecisionEngine:
             baseline_cost_usd=BASELINE_COST_USD,
             cost_reduction_percent=savings_percent,
             pricing_source="OpenAI DALL-E 3 Published Pricing: Standard ($0.040) vs HD Baseline ($0.080)",
+            calculation_explanation=(
+                f"Optimized calculation: {quality_tier.upper()} tier (${cost_usd:.3f}/image) vs. "
+                f"Baseline HD tier (${BASELINE_COST_USD:.3f}/image). "
+                f"Savings: ${BASELINE_COST_USD - cost_usd:.3f}/image ({savings_percent}% reduction). "
+                "Pricing is based directly on official published provider tiers, not estimated energy figures."
+            ),
             latency_seconds=None,
         )
 

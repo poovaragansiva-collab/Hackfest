@@ -29,6 +29,9 @@ class ResourceMetrics(BaseModel):
     baseline_cost_usd: float = Field(..., description="Naive baseline cost without purpose-awareness")
     cost_reduction_percent: float = Field(..., description="Calculated savings percentage")
     pricing_source: str = Field(..., description="Documentation or verification source for pricing basis")
+    calculation_explanation: Optional[str] = Field(
+        None, description="Transparent explanation of how the baseline and savings were calculated"
+    )
     latency_seconds: Optional[float] = Field(None, description="Request execution latency in seconds")
 
 

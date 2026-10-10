@@ -4,6 +4,29 @@ This document defines the HTTP REST contract between the **React Frontend (Membe
 
 ---
 
+## Central Workflow
+The API implements the required resource-aware lifecycle:
+```text
+User Request (Prompt + Purpose)
+  │
+  ▼
+Purpose-Aware Decision Engine
+  │
+  ▼
+Generation Configuration (Tier: Standard vs. HD, Resolution, Steps, Prompt Directives)
+  │
+  ▼
+Resource Comparison (Optimized Cost Estimate vs. Maximum Baseline)
+  │
+  ▼
+Replaceable Provider Adapter (Dev Mock / Real Provider)
+  │
+  ▼
+Final Output (Image Data + Human-Readable Rationale + Auditable Cost Metrics)
+```
+
+---
+
 ## Base URL
 `/api/v1`
 
@@ -29,7 +52,7 @@ Verifies backend service availability and active provider configuration.
 ## 2. Image Generation
 
 ### `POST /api/v1/generate`
-Submits a prompt together with educational purpose and optional constraints. The purpose-aware decision engine calculates the optimal generation configuration, explains its rationale, invokes the provider adapter, and returns the result with resource metrics.
+Submits a prompt together with educational purpose and optional constraints. The purpose-aware decision engine calculates the optimal generation configuration, explains its rationale, invokes the provider adapter, and returns the result with resource comparison metrics.
 
 ### Request Body (`application/json`)
 ```json
@@ -37,7 +60,7 @@ Submits a prompt together with educational purpose and optional constraints. The
   "prompt": "An outline of an elephant in the savanna for young kids to color",
   "intended_use": "coloring_worksheet",
   "color_preference": "black_and_white",
-  "detail_level": "low",
+  "detail_level": "minimal",
   "target_medium": "standard_print",
   "aspect_ratio": "1:1",
   "mode": "optimized"
@@ -48,12 +71,12 @@ Submits a prompt together with educational purpose and optional constraints. The
 | Field | Type | Required | Allowed Values / Description |
 |---|---|---|---|
 | `prompt` | `string` | **Yes** | 3 to 1000 characters. Descriptive text of the desired image. |
-| `intended_use` | `string` | **Yes** | `coloring_worksheet`, `flashcard`, `classroom_handout`, `presentation_slide`, `annual_report_poster`, `hallway_banner` |
+| `intended_use` | `string` | **Yes** | `coloring_worksheet`, `flashcard`, `classroom_handout`, `presentation_slide`, `annual_report_poster`, `hallway_banner`. *(Enforces: "Ask the user what the image is intended for")* |
 | `color_preference` | `string` | No | `black_and_white`, `line_art`, `limited_color`, `full_color`, `auto` (Default: `auto`) |
 | `detail_level` | `string` | No | `minimal`, `standard`, `high`, `ultra` (Default: `standard`) |
 | `target_medium` | `string` | No | `screen_only`, `standard_print`, `high_resolution_print` (Default: `standard_print`) |
 | `aspect_ratio` | `string` | No | `1:1`, `4:3`, `3:4`, `16:9`, `9:16` (Default: `1:1`) |
-| `mode` | `string` | No | `optimized` (resource-aware) or `baseline` (naive unoptimized default) (Default: `optimized`) |
+| `mode` | `string` | No | `optimized` (resource-aware) or `baseline` (legacy unoptimized default) (Default: `optimized`) |
 
 ---
 
@@ -63,34 +86,35 @@ Submits a prompt together with educational purpose and optional constraints. The
   "job_id": "gen_8f29e1a4",
   "status": "success",
   "image": {
-    "url": "data:image/svg+xml;base64,...",
+    "url": "data:image/svg+xml;utf8,...",
     "format": "svg",
     "width": 1024,
     "height": 1024
   },
   "applied_configuration": {
-    "model": "dev-mock-fast",
+    "model": "dall-e-3-standard",
     "quality_tier": "standard",
     "effective_resolution": "1024x1024",
     "steps": 15,
     "color_mode": "monochrome_line_art",
-    "prompt_refinement": "An outline of an elephant in the savanna, clean coloring sheet, thick black vector outlines, zero shading, pure white background"
+    "prompt_refinement": "An outline of an elephant in the savanna for young kids to color, black and white coloring page style, clean bold line art, crisp outlines, zero shading, pure white background, no complex gradients"
   },
   "decision_rationale": {
-    "summary": "Downscaled quality tier and adjusted prompt for coloring outline.",
+    "summary": "Optimized configuration for coloring_worksheet (STANDARD, 1024x1024).",
     "purpose_identified": "coloring_worksheet",
     "reasons": [
-      "Coloring worksheets do not benefit from HD texture diffusion or high sampling steps.",
-      "Optimized prompt to strict black outline style, preventing wasted GPU rendering on color saturation and shadows.",
-      "Resolution standard 1024x1024 provides crisp print quality without large-model compute cost."
+      "Coloring worksheets require clear outline contours; HD micro-texture synthesis is unnecessary.",
+      "Standard quality tier selected, reducing generation cost by 50% compared to baseline.",
+      "Appended outline-specific directives to ensure printer-friendly black and white output."
     ]
   },
   "resource_metrics": {
-    "estimated_cost_usd": 0.016,
+    "estimated_cost_usd": 0.040,
     "baseline_cost_usd": 0.080,
-    "cost_reduction_percent": 80.0,
-    "pricing_source": "Verified OpenAI DALL-E Standard (1024x1024) vs HD (1024x1792) baseline",
-    "latency_seconds": 1.2
+    "cost_reduction_percent": 50.0,
+    "pricing_source": "OpenAI DALL-E 3 Published Pricing: Standard ($0.040) vs HD Baseline ($0.080)",
+    "calculation_explanation": "Optimized calculation: STANDARD tier ($0.040/image) vs. Baseline HD tier ($0.080/image). Savings: $0.040/image (50.0% reduction). Pricing is based directly on official published provider tiers, not estimated energy figures.",
+    "latency_seconds": 0.024
   }
 }
 ```

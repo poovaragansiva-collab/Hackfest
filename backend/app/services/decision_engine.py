@@ -40,7 +40,6 @@ class EngineDecision:
 BASELINE_COST_USD = 0.080
 BASELINE_QUALITY_TIER = "hd"
 BASELINE_RESOLUTION = "1024x1792"
-BASELINE_STEPS = 50
 
 
 class DecisionEngine:
@@ -59,7 +58,7 @@ class DecisionEngine:
             model="dall-e-3-hd",
             quality_tier=BASELINE_QUALITY_TIER,
             effective_resolution=BASELINE_RESOLUTION,
-            steps=BASELINE_STEPS,
+            steps=None,
             color_mode="unconstrained_full_color",
             prompt_refinement=req.prompt,
         )
@@ -75,10 +74,14 @@ class DecisionEngine:
             estimated_cost_usd=BASELINE_COST_USD,
             baseline_cost_usd=BASELINE_COST_USD,
             cost_reduction_percent=0.0,
-            pricing_source="OpenAI DALL-E 3 Published Pricing: HD 1024x1792 ($0.080)",
+            unit="USD",
+            provenance="mock_illustrative",
+            pricing_basis="OpenAI DALL-E 3 reference pricing tiers ($0.040 Standard 1024x1024 vs $0.080 HD 1024x1792)",
+            pricing_source="OpenAI API Official Pricing Documentation (Reference Benchmark)",
+            is_live_billed=False,
             calculation_explanation=(
-                f"Baseline configuration: HD quality tier at ${BASELINE_COST_USD:.3f}/image (standard district legacy default). "
-                "No resource reduction applied."
+                f"Illustrative baseline: HD quality tier (1024x1792) at ${BASELINE_COST_USD:.3f}/image reference rate "
+                "(standard district legacy default). Active provider is 'mock' (no live financial billing)."
             ),
             latency_seconds=None,
         )
@@ -96,7 +99,6 @@ class DecisionEngine:
         ]:
             quality_tier = "hd"
             effective_res = "1024x1792" if req.target_medium == TargetMediumEnum.HIGH_RESOLUTION_PRINT else "1024x1024"
-            steps = 40
             cost_usd = 0.080
             reasons.append(
                 f"Purpose '{req.intended_use.value}' requires high visual fidelity and large-format rendering."
@@ -107,7 +109,6 @@ class DecisionEngine:
         elif req.intended_use == IntendedUseEnum.COLORING_WORKSHEET:
             quality_tier = "standard"
             effective_res = "1024x1024"
-            steps = 15
             cost_usd = 0.040
             reasons.append(
                 "Coloring worksheets require clear outline contours; HD micro-texture synthesis is unnecessary."
@@ -118,7 +119,6 @@ class DecisionEngine:
         elif req.intended_use == IntendedUseEnum.FLASHCARD:
             quality_tier = "standard"
             effective_res = "1024x1024"
-            steps = 20
             cost_usd = 0.040
             reasons.append(
                 "Flashcards prioritize high subject readability over photorealistic detail."
@@ -130,7 +130,6 @@ class DecisionEngine:
             # CLASSROOM_HANDOUT, PRESENTATION_SLIDE
             quality_tier = "standard"
             effective_res = "1024x1024"
-            steps = 25
             cost_usd = 0.040
             reasons.append(
                 f"Purpose '{req.intended_use.value}' fits standard classroom display and reproduction."
@@ -153,7 +152,7 @@ class DecisionEngine:
             model=f"dall-e-3-{quality_tier}",
             quality_tier=quality_tier,
             effective_resolution=effective_res,
-            steps=steps,
+            steps=None,
             color_mode=color_mode_label,
             prompt_refinement=refined_prompt,
         )
@@ -168,12 +167,16 @@ class DecisionEngine:
             estimated_cost_usd=cost_usd,
             baseline_cost_usd=BASELINE_COST_USD,
             cost_reduction_percent=savings_percent,
-            pricing_source="OpenAI DALL-E 3 Published Pricing: Standard ($0.040) vs HD Baseline ($0.080)",
+            unit="USD",
+            provenance="mock_illustrative",
+            pricing_basis="OpenAI DALL-E 3 reference pricing tiers ($0.040 Standard 1024x1024 vs $0.080 HD 1024x1792)",
+            pricing_source="OpenAI API Official Pricing Documentation (Reference Benchmark)",
+            is_live_billed=False,
             calculation_explanation=(
-                f"Optimized calculation: {quality_tier.upper()} tier (${cost_usd:.3f}/image) vs. "
+                f"Illustrative reference calculation: {quality_tier.upper()} tier (${cost_usd:.3f}/image) vs. "
                 f"Baseline HD tier (${BASELINE_COST_USD:.3f}/image). "
-                f"Savings: ${BASELINE_COST_USD - cost_usd:.3f}/image ({savings_percent}% reduction). "
-                "Pricing is based directly on official published provider tiers, not estimated energy figures."
+                f"Illustrative savings: ${BASELINE_COST_USD - cost_usd:.3f}/image ({savings_percent}% reduction). "
+                "Pricing basis is derived from published OpenAI DALL-E 3 tiers. Active provider is 'mock' (no live financial billing)."
             ),
             latency_seconds=None,
         )

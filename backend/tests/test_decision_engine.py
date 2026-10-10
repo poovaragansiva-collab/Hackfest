@@ -23,6 +23,10 @@ def test_decision_engine_coloring_worksheet_optimized():
     assert decision.metrics.estimated_cost_usd == 0.040
     assert decision.metrics.baseline_cost_usd == 0.080
     assert decision.metrics.cost_reduction_percent == 50.0
+    assert decision.metrics.unit == "USD"
+    assert decision.metrics.provenance == "mock_illustrative"
+    assert decision.metrics.is_live_billed is False
+    assert "DALL-E 3" in decision.metrics.pricing_basis
     assert decision.metrics.calculation_explanation is not None
     assert "STANDARD tier" in decision.metrics.calculation_explanation
     assert len(decision.rationale.reasons) >= 2

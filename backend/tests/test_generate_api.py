@@ -34,6 +34,9 @@ def test_generate_image_coloring_worksheet_success():
     assert data["resource_metrics"]["estimated_cost_usd"] == 0.040
     assert data["resource_metrics"]["baseline_cost_usd"] == 0.080
     assert data["resource_metrics"]["cost_reduction_percent"] == 50.0
+    assert data["resource_metrics"]["unit"] == "USD"
+    assert data["resource_metrics"]["provenance"] == "mock_illustrative"
+    assert data["resource_metrics"]["is_live_billed"] is False
     assert data["resource_metrics"]["calculation_explanation"] is not None
     assert data["resource_metrics"]["latency_seconds"] is not None
 

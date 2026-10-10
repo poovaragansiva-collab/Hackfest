@@ -95,7 +95,7 @@ Submits a prompt together with educational purpose and optional constraints. The
     "model": "dall-e-3-standard",
     "quality_tier": "standard",
     "effective_resolution": "1024x1024",
-    "steps": 15,
+    "steps": null,
     "color_mode": "monochrome_line_art",
     "prompt_refinement": "An outline of an elephant in the savanna for young kids to color, black and white coloring page style, clean bold line art, crisp outlines, zero shading, pure white background, no complex gradients"
   },
@@ -112,8 +112,12 @@ Submits a prompt together with educational purpose and optional constraints. The
     "estimated_cost_usd": 0.040,
     "baseline_cost_usd": 0.080,
     "cost_reduction_percent": 50.0,
-    "pricing_source": "OpenAI DALL-E 3 Published Pricing: Standard ($0.040) vs HD Baseline ($0.080)",
-    "calculation_explanation": "Optimized calculation: STANDARD tier ($0.040/image) vs. Baseline HD tier ($0.080/image). Savings: $0.040/image (50.0% reduction). Pricing is based directly on official published provider tiers, not estimated energy figures.",
+    "unit": "USD",
+    "provenance": "mock_illustrative",
+    "pricing_basis": "OpenAI DALL-E 3 reference pricing tiers ($0.040 Standard 1024x1024 vs $0.080 HD 1024x1792)",
+    "pricing_source": "OpenAI API Official Pricing Documentation (Reference Benchmark)",
+    "is_live_billed": false,
+    "calculation_explanation": "Illustrative reference calculation: STANDARD tier ($0.040/image) vs. Baseline HD tier ($0.080/image). Illustrative savings: $0.040/image (50.0% reduction). Pricing basis is derived from published OpenAI DALL-E 3 tiers. Active provider is 'mock' (no live financial billing).",
     "latency_seconds": 0.024
   }
 }

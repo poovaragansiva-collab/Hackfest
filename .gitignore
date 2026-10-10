@@ -56,3 +56,12 @@ dist-ssr/
 *.swo
 .DS_Store
 Thumbs.db
+
+# SQLite Database
+backend/data/*.db
+*.db
+
+# Controlled Generated Image Artifacts
+backend/outputs/*
+!backend/outputs/.gitkeep
+outputs/*

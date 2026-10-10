@@ -1,11 +1,10 @@
-import { TIERS } from '../services/mockGenerationService';
+import { TIERS } from '../services/apiService';
 import './TierSelector.css';
 
 /**
  * TierSelector
- * Renders two quality/effort tier cards with recommendation badge.
- * Shows a note when the user overrides the recommended tier.
- * Never silently overrides the user's selection.
+ * Apple iOS Liquid Glass Segmented Tier Cards
+ * Renders Standard vs HD quality tiers with recommendation tags and clear feedback.
  */
 export function TierSelector({
   selected,
@@ -18,13 +17,15 @@ export function TierSelector({
 
   return (
     <div className="tier-selector">
-      <p className="tier-selector__label">
-        Quality / effort tier <span aria-hidden="true">*</span>
-      </p>
+      <div className="tier-selector__header">
+        <span className="tier-selector__label">
+          Quality &amp; Effort Tier <span className="required" aria-hidden="true">*</span>
+        </span>
+      </div>
 
       <div className="tier-cards" role="group" aria-label="Select quality tier">
         {TIERS.map(tier => {
-          const isSelected  = selected === tier.id;
+          const isSelected = selected === tier.id;
           const isRecommended = tier.id === recommendedTierId;
 
           return (
@@ -40,13 +41,20 @@ export function TierSelector({
             >
               {isRecommended && (
                 <span className="tier-card__rec-badge" aria-hidden="true">
-                  Recommended for this purpose
+                  <span className="rec-star">★</span> Recommended
                 </span>
               )}
-              <span className="tier-card__icon" aria-hidden="true">{tier.icon}</span>
-              <span className="tier-card__name">{tier.label}</span>
-              <span className="tier-card__tagline">{tier.tagline}</span>
+
+              <div className="tier-card__top">
+                <span className="tier-card__icon" aria-hidden="true">{tier.icon}</span>
+                <div className="tier-card__heading">
+                  <span className="tier-card__name">{tier.label}</span>
+                  <span className="tier-card__tagline">{tier.tagline}</span>
+                </div>
+              </div>
+
               <p className="tier-card__desc">{tier.description}</p>
+
               <ul className="tier-card__caps" aria-label={`${tier.label} capabilities`}>
                 {tier.capabilities.map((cap, i) => (
                   <li key={i}>{cap}</li>
@@ -57,19 +65,23 @@ export function TierSelector({
         })}
       </div>
 
-      {/* Recommendation context */}
+      {/* Recommendation reasoning */}
       {recommendReason && !isOverride && (
-        <p className="tier-rec-note" role="note">
-          <strong>Why recommended:</strong> {recommendReason}
-        </p>
+        <div className="tier-rec-note" role="note">
+          <span className="tier-note-icon">💡</span>
+          <span><strong>Why recommended:</strong> {recommendReason}</span>
+        </div>
       )}
 
-      {/* Override notice — user chose differently, never hidden */}
+      {/* Override Notice */}
       {isOverride && (
-        <p className="tier-override-note" role="note">
-          You have chosen a different tier than the one recommended for this purpose.
-          {recommendReason && <> Recommendation: {recommendReason}</>}
-        </p>
+        <div className="tier-override-note" role="note">
+          <span className="tier-note-icon">ℹ️</span>
+          <span>
+            User manual override active.
+            {recommendReason && <> (Default recommended: {recommendReason})</>}
+          </span>
+        </div>
       )}
     </div>
   );

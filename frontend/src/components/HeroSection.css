@@ -1,167 +1,34 @@
 /* ============================================================
-   HeroSection styles
+   HeroSection — Editorial Header Matching Reference
    ============================================================ */
 
-.hero {
-  position: relative;
-  padding: clamp(3rem, 8vw, 5.5rem) var(--gap-xl);
-  text-align: center;
-  overflow: hidden;
-  border-bottom: 1px solid var(--c-border);
+.hero-studio {
+  margin-bottom: var(--gap-lg);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
-/* Animated mesh gradient background */
-.hero__bg {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  overflow: hidden;
-}
-
-.hero__orb {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(80px);
-  opacity: 0.18;
-  animation: drift var(--dur, 14s) ease-in-out infinite alternate;
-}
-
-.hero__orb--1 {
-  width: 500px; height: 500px;
-  background: #8b5cf6;
-  top: -180px; left: -100px;
-  --dur: 16s;
-}
-
-.hero__orb--2 {
-  width: 400px; height: 400px;
-  background: #06b6d4;
-  top: -100px; right: -80px;
-  --dur: 12s;
-  animation-direction: alternate-reverse;
-}
-
-.hero__orb--3 {
-  width: 300px; height: 300px;
-  background: #3b82f6;
-  bottom: -120px; left: 30%;
-  --dur: 18s;
-}
-
-@keyframes drift {
-  from { transform: translate(0, 0) scale(1); }
-  to   { transform: translate(30px, 20px) scale(1.06); }
-}
-
-/* Grid overlay texture */
-.hero__grid {
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
-  background-size: 48px 48px;
-  mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 40%, transparent 100%);
-  -webkit-mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 40%, transparent 100%);
-}
-
-.hero__inner {
-  position: relative;
-  z-index: 1;
-  max-width: 720px;
-  margin: 0 auto;
-}
-
-.hero__eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--gap-xs);
-  padding: 5px 14px;
-  background: rgba(139,92,246,0.15);
-  border: 1px solid rgba(139,92,246,0.3);
-  border-radius: var(--r-pill);
-  font-size: var(--t-xs);
-  color: #a78bfa;
-  font-weight: 500;
-  margin-bottom: var(--gap-md);
-  letter-spacing: 0.02em;
-}
-
-.hero__eyebrow-dot {
-  width: 5px; height: 5px;
-  border-radius: 50%;
-  background: currentColor;
-  animation: pulse-dot 2.4s ease-in-out infinite;
-}
-
-@keyframes pulse-dot {
-  0%, 100% { opacity: 1; }
-  50%       { opacity: 0.3; }
-}
-
-.hero__heading {
-  font-size: clamp(2rem, 5.5vw, 3.5rem);
+.hero-studio__title {
+  font-size: 2.25rem;
   font-weight: 800;
-  line-height: 1.1;
+  color: var(--c-ink);
   letter-spacing: -0.03em;
-  margin-bottom: var(--gap-md);
+  line-height: 1.15;
 }
 
-.hero__heading-line1 { color: var(--c-ink); display: block; }
-
-.hero__heading-line2 {
-  display: block;
-  background: var(--gradient-accent);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+.hero-studio__sub {
+  font-size: 0.95rem;
+  color: var(--c-ink-faint);
+  max-width: 72ch;
+  line-height: 1.55;
 }
 
-.hero__sub {
-  font-size: clamp(var(--t-base), 2vw, var(--t-lg));
-  color: var(--c-ink-mid);
-  max-width: 52ch;
-  margin: 0 auto var(--gap-lg);
-  line-height: 1.65;
-}
-
-.hero__cta {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--gap-sm);
-  padding: 0.85rem 2rem;
-  background: var(--gradient-btn);
-  color: #fff;
-  font-family: inherit;
-  font-size: var(--t-base);
-  font-weight: 600;
-  border: none;
-  border-radius: var(--r-md);
-  cursor: pointer;
-  box-shadow: var(--shadow-accent);
-  transition: transform var(--dur-fast) var(--ease),
-              box-shadow var(--dur-fast) var(--ease);
-  text-decoration: none;
-}
-
-.hero__cta:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 32px rgba(139,92,246,0.45);
-}
-
-.hero__cta:active {
-  transform: translateY(0);
-}
-
-.hero__cta-arrow {
-  transition: transform var(--dur-fast) var(--ease);
-}
-
-.hero__cta:hover .hero__cta-arrow {
-  transform: translateY(3px);
-}
-
-@media (max-width: 600px) {
-  .hero { padding: 3rem var(--gap-lg); }
+@media (max-width: 640px) {
+  .hero-studio__title {
+    font-size: 1.75rem;
+  }
+  .hero-studio__sub {
+    font-size: 0.88rem;
+  }
 }

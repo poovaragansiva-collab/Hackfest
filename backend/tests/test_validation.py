@@ -32,3 +32,19 @@ def test_validation_invalid_intended_use():
         },
     )
     assert response.status_code == 422
+
+
+def test_validation_infer_purpose_empty_prompt():
+    response = client.post(
+        "/api/v1/infer-purpose",
+        json={"prompt": ""},
+    )
+    assert response.status_code == 422
+
+
+def test_validation_infer_purpose_missing_prompt():
+    response = client.post(
+        "/api/v1/infer-purpose",
+        json={},
+    )
+    assert response.status_code == 422

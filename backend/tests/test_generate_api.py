@@ -5,6 +5,13 @@ from backend.app.main import app
 client = TestClient(app)
 
 
+@pytest.fixture(autouse=True)
+def use_mock_provider(monkeypatch):
+    """Ensures API integration tests always use offline mock provider."""
+    from backend.app.config import settings
+    monkeypatch.setattr(settings, "active_provider", "mock")
+
+
 def test_generate_image_coloring_worksheet_success():
     payload = {
         "prompt": "An outline of an elephant in the savanna for young kids to color",
@@ -53,3 +60,23 @@ def test_generate_image_baseline_mode_comparison():
 
     assert data["applied_configuration"]["quality_tier"] == "hd"
     assert data["resource_metrics"]["cost_reduction_percent"] == 0.0
+
+
+def test_automatic1111_offline_returns_503_no_mock_fallback(monkeypatch):
+    """Verifies that when Automatic1111 provider is active and WebUI is unreachable,
+    the API returns HTTP 503 and never silently falls back to mock data or fake images.
+    """
+    from backend.app.config import settings
+    monkeypatch.setattr(settings, "active_provider", "automatic1111")
+    monkeypatch.setattr(settings, "automatic1111_base_url", "http://127.0.0.1:59999")
+    monkeypatch.setattr(settings, "sd_webui_url", "http://127.0.0.1:59999")
+
+    payload = {
+        "prompt": "An outline of an elephant for coloring",
+        "quality_tier": "eco",
+    }
+    response = client.post("/api/v1/generate", json=payload)
+    assert response.status_code == 503
+    data = response.json()
+    assert "detail" in data
+    assert "Could not connect" in data["detail"] or "AUTOMATIC1111" in data["detail"] or "unreachable" in data["detail"]

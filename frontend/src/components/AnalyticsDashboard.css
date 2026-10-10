@@ -1,0 +1,413 @@
+/* ============================================================
+   AnalyticsDashboard — District Analytics & Live Session Metrics
+   ============================================================ */
+
+.analytics-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-xl);
+}
+
+.analytics-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-md);
+}
+
+.analytics-section--demo {
+  border-top: 1px solid var(--c-border);
+  padding-top: var(--gap-lg);
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.section-kicker {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--c-accent);
+  display: block;
+  margin-bottom: 2px;
+}
+
+.section-header h2 {
+  font-size: var(--t-md);
+  font-weight: 700;
+  color: var(--c-ink);
+  letter-spacing: -0.01em;
+}
+
+.section-desc {
+  font-size: var(--t-xs);
+  color: var(--c-ink-faint);
+  max-width: 65ch;
+  line-height: 1.5;
+  margin-top: 4px;
+}
+
+.live-status-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: var(--r-pill);
+  background-color: var(--c-surface-pill);
+  border: 1px solid var(--c-border);
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--c-ink);
+}
+
+.live-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: var(--c-green);
+  box-shadow: 0 0 6px var(--c-green);
+}
+
+/* ── KPI Grid ─────────────────────────────────────────── */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 12px;
+}
+
+.kpi-card {
+  background-color: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-md);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  box-shadow: var(--shadow-sm);
+}
+
+.kpi-card--green {
+  background-color: var(--c-green-subtle);
+  border-color: var(--c-green-border);
+}
+
+.kpi-card__label {
+  font-size: 0.70rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--c-ink-faint);
+}
+
+.kpi-card__val {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--c-ink);
+  font-family: var(--font-mono);
+  line-height: 1.2;
+}
+
+.kpi-card__val--green {
+  color: var(--c-green);
+}
+
+.kpi-card__caption {
+  font-size: 0.70rem;
+  color: var(--c-ink-subtle);
+}
+
+/* ── Tier Distribution Panel ──────────────────────────── */
+.distribution-panel {
+  background-color: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-md);
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.dist-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.dist-header h3 {
+  font-size: var(--t-sm);
+  font-weight: 700;
+  color: var(--c-ink);
+}
+
+.dist-total {
+  font-size: 0.72rem;
+  color: var(--c-ink-faint);
+  font-family: var(--font-mono);
+}
+
+.tier-dist-track {
+  width: 100%;
+  height: 14px;
+  background-color: var(--c-surface-pill);
+  border-radius: var(--r-pill);
+  overflow: hidden;
+  display: flex;
+  border: 1px solid var(--c-border);
+}
+
+.dist-segment {
+  height: 100%;
+  transition: width 350ms var(--ease-standard);
+}
+
+.dist-segment--eco {
+  background-color: var(--c-green);
+}
+
+.dist-segment--standard {
+  background-color: var(--c-accent);
+}
+
+.dist-segment--hq {
+  background-color: var(--c-amber);
+}
+
+.dist-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  font-size: 0.74rem;
+  color: var(--c-ink-mid);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.legend-dot--eco {
+  background-color: var(--c-green);
+}
+
+.legend-dot--standard {
+  background-color: var(--c-accent);
+}
+
+.legend-dot--hq {
+  background-color: var(--c-amber);
+}
+
+.dist-empty {
+  font-size: 0.75rem;
+  color: var(--c-ink-faint);
+  padding: 12px;
+  text-align: center;
+  background-color: var(--c-surface-pill);
+  border-radius: var(--r-xs);
+}
+
+/* ── Explicit Sample Demo Data Banner ─────────────────── */
+.demo-data-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background-color: var(--c-amber-subtle, #fef3c7);
+  border: 1px solid var(--c-amber-border, #fcd34d);
+  border-radius: var(--r-sm);
+  color: var(--c-amber, #92400e);
+  font-size: 0.76rem;
+  line-height: 1.4;
+}
+
+.demo-badge {
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  padding: 3px 8px;
+  background-color: #f59e0b;
+  color: #000;
+  border-radius: var(--r-pill);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ── Interactive School Slider ────────────────────────── */
+.schools-slider-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 220px;
+}
+
+.schools-slider-wrap label {
+  font-size: 0.74rem;
+  color: var(--c-ink);
+}
+
+.schools-slider-wrap input[type='range'] {
+  width: 100%;
+  accent-color: var(--c-accent);
+  cursor: pointer;
+}
+
+/* ── District Comparison Card ─────────────────────────── */
+.district-comparison-card {
+  background-color: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-md);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.district-comparison-card h3 {
+  font-size: var(--t-sm);
+  font-weight: 700;
+  color: var(--c-ink);
+}
+
+.district-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.district-bar-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.district-bar-row__header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.74rem;
+  color: var(--c-ink-mid);
+  font-weight: 500;
+}
+
+.bar-val {
+  font-weight: 700;
+  font-family: var(--font-mono);
+  color: var(--c-ink);
+}
+
+.bar-val--green {
+  color: var(--c-green);
+}
+
+.district-bar-track {
+  width: 100%;
+  height: 12px;
+  background-color: var(--c-surface-pill);
+  border-radius: var(--r-pill);
+  overflow: hidden;
+  border: 1px solid var(--c-border);
+}
+
+.district-bar-fill {
+  height: 100%;
+  border-radius: var(--r-pill);
+  transition: width 350ms var(--ease-standard);
+}
+
+.district-bar-fill--baseline {
+  background-color: var(--c-ink-subtle);
+}
+
+.district-bar-fill--optimized {
+  background-color: var(--c-green);
+}
+
+/* ── Breakdown Table ──────────────────────────────────── */
+.district-breakdown-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-sm);
+}
+
+.district-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.74rem;
+}
+
+.district-table th {
+  background-color: var(--c-surface-pill);
+  padding: 8px 12px;
+  color: var(--c-ink-faint);
+  font-weight: 600;
+  border-bottom: 1px solid var(--c-border);
+  white-space: nowrap;
+}
+
+.district-table td {
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--c-border);
+  color: var(--c-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.district-table tr:last-child td {
+  border-bottom: none;
+}
+
+.table-badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: var(--r-pill);
+}
+
+.table-badge--eco {
+  background-color: var(--c-green-subtle);
+  color: var(--c-green);
+  border: 1px solid var(--c-green-border);
+}
+
+.table-badge--std {
+  background-color: var(--c-accent-subtle);
+  color: var(--c-accent);
+  border: 1px solid var(--c-accent-border);
+}
+
+.table-badge--hq {
+  background-color: var(--c-amber-subtle);
+  color: var(--c-amber);
+  border: 1px solid var(--c-amber-border);
+}
+
+.district-summary-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  background-color: var(--c-surface-pill);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-sm);
+  font-size: 0.74rem;
+  color: var(--c-ink-mid);
+  line-height: 1.45;
+}
+
+.summary-icon {
+  font-size: 1.1rem;
+}

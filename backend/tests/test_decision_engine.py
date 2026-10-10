@@ -6,6 +6,13 @@ from backend.app.schemas.request import (
     GenerationModeEnum,
 )
 from backend.app.services.decision_engine import DecisionEngine
+from backend.app.config import settings
+
+
+@pytest.fixture(autouse=True)
+def use_mock_settings(monkeypatch):
+    """Ensures baseline decision engine tests run against mock provider settings."""
+    monkeypatch.setattr(settings, "active_provider", "mock")
 
 
 def test_decision_engine_coloring_worksheet_optimized():
@@ -58,3 +65,27 @@ def test_decision_engine_baseline_mode():
     assert decision.configuration.prompt_refinement == req.prompt
     assert decision.metrics.estimated_cost_usd == 0.080
     assert decision.metrics.cost_reduction_percent == 0.0
+
+
+def test_decision_engine_quality_tier_override():
+    # User manually overrides coloring sheet to HD
+    req_hd_override = ImageGenerationRequest(
+        prompt="A friendly cartoon giraffe in a savanna",
+        intended_use=IntendedUseEnum.COLORING_WORKSHEET,
+        quality_tier="hd",
+    )
+    decision_hd = DecisionEngine.evaluate(req_hd_override)
+    assert decision_hd.configuration.quality_tier == "hd"
+    assert decision_hd.metrics.estimated_cost_usd == 0.080
+    assert "High Quality (HD)" in decision_hd.rationale.reasons[0]
+
+    # User manually specifies standard tier
+    req_std = ImageGenerationRequest(
+        prompt="A district poster banner",
+        intended_use=IntendedUseEnum.ANNUAL_REPORT_POSTER,
+        quality_tier="standard",
+    )
+    decision_std = DecisionEngine.evaluate(req_std)
+    assert decision_std.configuration.quality_tier == "standard"
+    assert decision_std.metrics.estimated_cost_usd == 0.040
+

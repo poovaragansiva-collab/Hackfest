@@ -5,11 +5,16 @@ from pydantic import BaseModel, Field
 
 class IntendedUseEnum(str, Enum):
     COLORING_WORKSHEET = "coloring_worksheet"
+    COLORING_SHEET = "coloring_sheet"
     FLASHCARD = "flashcard"
     CLASSROOM_HANDOUT = "classroom_handout"
+    WORKSHEET_ILLUSTRATION = "worksheet_illustration"
     PRESENTATION_SLIDE = "presentation_slide"
+    EDUCATIONAL_POSTER = "educational_poster"
     ANNUAL_REPORT_POSTER = "annual_report_poster"
+    PREMIUM_POSTER = "premium_poster"
     HALLWAY_BANNER = "hallway_banner"
+    ICON_THUMBNAIL = "icon_thumbnail"
 
 
 class ColorPreferenceEnum(str, Enum):
@@ -46,6 +51,15 @@ class GenerationModeEnum(str, Enum):
     BASELINE = "baseline"
 
 
+class InferPurposeRequest(BaseModel):
+    prompt: str = Field(
+        ...,
+        min_length=1,
+        max_length=1000,
+        description="Natural language prompt to infer purpose from",
+    )
+
+
 class ImageGenerationRequest(BaseModel):
     prompt: str = Field(
         ...,
@@ -54,9 +68,13 @@ class ImageGenerationRequest(BaseModel):
         description="Text description of the requested image",
         examples=["An outline of an elephant in the savanna for young kids to color"],
     )
-    intended_use: IntendedUseEnum = Field(
-        ...,
-        description="Specific educational use-case to inform resource-aware configuration",
+    intended_use: Optional[IntendedUseEnum] = Field(
+        default=None,
+        description="Specific educational use-case. If omitted, inferred automatically from prompt.",
+    )
+    negative_prompt: Optional[str] = Field(
+        default="",
+        description="Optional custom negative prompt keywords",
     )
     color_preference: Optional[ColorPreferenceEnum] = Field(
         default=ColorPreferenceEnum.AUTO,
@@ -78,3 +96,8 @@ class ImageGenerationRequest(BaseModel):
         default=GenerationModeEnum.OPTIMIZED,
         description="Run in resource-aware optimized mode or naive baseline mode for comparison",
     )
+    quality_tier: Optional[str] = Field(
+        default=None,
+        description="Optional explicit quality tier override ('eco', 'standard', 'high')",
+    )
+

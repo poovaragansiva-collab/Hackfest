@@ -1,73 +1,102 @@
 /* ============================================================
-   RequirementsSelector component styles
+   RequirementsSelector — Professional Studio Checkbox List
    ============================================================ */
 
 .requirements-group {
   display: flex;
   flex-direction: column;
-  gap: var(--gap-xs);
+  gap: 8px;
+  border: none;
+  padding: 0;
+  margin: 0;
 }
 
-.requirements-group legend {
+.requirements-legend {
   font-size: var(--t-sm);
-  font-weight: 500;
+  font-weight: 600;
   color: var(--c-ink-mid);
-  margin-bottom: var(--gap-xs);
-  float: left;
-  width: 100%;
+  letter-spacing: -0.01em;
+  margin-bottom: 2px;
 }
 
-.requirements-group legend span.required {
+.requirements-legend .required {
   color: var(--c-accent);
   margin-left: 2px;
 }
 
+.requirements-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* Option Row */
 .req-option {
   display: flex;
   align-items: center;
-  gap: var(--gap-sm);
-  padding: var(--gap-sm) var(--gap-md);
-  background: var(--c-bg);
-  border: 1.5px solid var(--c-border);
-  border-radius: var(--r-md);
+  gap: 12px;
+  padding: 9px 12px;
+  background-color: var(--c-surface-input);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-sm);
   cursor: pointer;
-  transition: border-color var(--dur-fast) var(--ease),
-              background var(--dur-fast) var(--ease);
   user-select: none;
+  transition: background-color var(--dur-fast) var(--ease-standard),
+              border-color var(--dur-fast) var(--ease-standard);
+  position: relative;
 }
 
 .req-option:hover {
-  border-color: rgba(124,58,237,0.4);
-  background: var(--c-accent-tint);
+  background-color: var(--c-surface-hover);
+  border-color: var(--c-border-strong);
 }
 
-.req-option:has(input:checked) {
-  border-color: var(--c-accent);
-  background: var(--c-accent-tint);
+.req-option--checked {
+  background-color: var(--c-accent-subtle) !important;
+  border-color: var(--c-accent-border) !important;
 }
 
+/* Hidden native input */
 .req-option input[type="checkbox"] {
-  width: 16px;
-  height: 16px;
-  accent-color: var(--c-accent);
-  cursor: pointer;
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* Custom Checkbox */
+.req-checkbox-custom {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  background-color: var(--c-surface);
+  border: 1.5px solid var(--c-border-strong);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
-  margin: 0;
+  color: transparent;
+  transition: all var(--dur-fast) var(--ease-standard);
+}
+
+.req-option:hover .req-checkbox-custom {
+  border-color: var(--c-ink-mid);
+}
+
+.req-option--checked .req-checkbox-custom {
+  background-color: var(--c-accent);
+  border-color: var(--c-accent);
+  color: var(--c-accent-text);
 }
 
 .req-option__label {
   font-size: var(--t-sm);
   color: var(--c-ink-mid);
-  line-height: 1.3;
+  line-height: 1.35;
+  transition: color var(--dur-fast) var(--ease-standard);
 }
 
-.req-option:has(input:checked) .req-option__label {
-  color: var(--c-accent-dark);
-  font-weight: 500;
-}
-
-.field-error {
-  font-size: var(--t-xs);
-  color: var(--c-red);
+.req-option--checked .req-option__label {
+  color: var(--c-ink);
   font-weight: 500;
 }

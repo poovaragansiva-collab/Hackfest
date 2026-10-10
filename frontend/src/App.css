@@ -1,65 +1,100 @@
 /* ============================================================
-   App layout styles
+   App Layout — Professional Studio Workbench
    ============================================================ */
 
 .app {
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
+  position: relative;
+  background-color: var(--c-bg);
+  transition: background-color var(--dur-mid) var(--ease-standard);
 }
 
-/* Two-column workspace */
-.workspace {
+.main-content {
   flex: 1;
-  max-width: 1200px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Studio container wrapping hero, 2-column workspace, telemetry, and recent */
+.studio-container {
+  max-width: 1240px;
   width: 100%;
   margin: 0 auto;
-  padding: var(--gap-lg) var(--gap-xl);
+  padding: 32px 24px 64px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Tab View Container for History & Analytics */
+.tab-view-container {
+  max-width: 1240px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 32px 24px 64px 24px;
+}
+
+/* Two-column studio workspace */
+.workspace {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: var(--gap-lg);
+  gap: 24px;
   align-items: start;
 }
 
-/* Sticky form column on desktop */
 .workspace__form {
-  position: sticky;
-  top: var(--gap-lg);
+  display: flex;
+  flex-direction: column;
 }
 
 .workspace__result {
-  /* grows to match form height at minimum */
-  min-height: 420px;
+  display: flex;
+  flex-direction: column;
 }
 
-/* Footer */
+/* Studio Footer */
 .app-footer {
-  padding: var(--gap-md) var(--gap-xl);
+  margin-top: auto;
+  padding: 1.25rem 24px;
+  background-color: var(--c-surface);
   border-top: 1px solid var(--c-border);
   display: flex;
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
   gap: var(--gap-sm);
+  position: relative;
+  z-index: 5;
+  transition: background-color var(--dur-mid) var(--ease-standard),
+              border-color var(--dur-mid) var(--ease-standard);
 }
 
 .footer-note {
   font-size: var(--t-xs);
   color: var(--c-ink-faint);
   line-height: 1.5;
+  margin: 0;
 }
 
 .footer-note strong {
   color: var(--c-ink-mid);
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .footer-member {
   font-size: var(--t-xs);
-  color: var(--c-ink-faint);
-  display: flex;
+  color: var(--c-ink-mid);
+  display: inline-flex;
   align-items: center;
-  gap: var(--gap-xs);
+  gap: 8px;
+  padding: 4px 12px;
+  background-color: var(--c-surface-pill);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-pill);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
 }
 
 .footer-member::before {
@@ -68,30 +103,25 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--c-accent);
-  opacity: 0.6;
+  background-color: var(--c-green);
 }
 
-/* Responsive — stack on narrow viewports */
-@media (max-width: 860px) {
+/* Responsive Stacking */
+@media (max-width: 960px) {
   .workspace {
     grid-template-columns: 1fr;
-    padding: var(--gap-md) var(--gap-lg);
-    gap: var(--gap-md);
+    gap: 20px;
   }
 
-  .workspace__form {
-    position: static;
+  .studio-container,
+  .tab-view-container {
+    padding: 20px 16px 48px 16px;
   }
 }
 
-@media (max-width: 480px) {
-  .workspace {
-    padding: var(--gap-md);
-  }
-
+@media (max-width: 560px) {
   .app-footer {
-    padding: var(--gap-md);
+    padding: 16px;
     flex-direction: column;
     align-items: flex-start;
   }

@@ -1,0 +1,205 @@
+/* ============================================================
+   GenerationForm component styles
+   ============================================================ */
+
+.form-card {
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-lg);
+  padding: var(--gap-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.form-card h2 {
+  font-size: var(--t-lg);
+  font-weight: 600;
+  color: var(--c-ink);
+  margin-bottom: var(--gap-lg);
+  padding-bottom: var(--gap-sm);
+  border-bottom: 1px solid var(--c-border);
+}
+
+/* Field groups */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-xs);
+  margin-bottom: var(--gap-md);
+}
+
+.field:last-of-type {
+  margin-bottom: 0;
+}
+
+.field label {
+  font-size: var(--t-sm);
+  font-weight: 500;
+  color: var(--c-ink-mid);
+}
+
+.field label span.required {
+  color: var(--c-accent);
+  margin-left: 2px;
+}
+
+/* Prompt textarea */
+.prompt-textarea {
+  width: 100%;
+  min-height: 110px;
+  padding: var(--gap-sm) var(--gap-md);
+  font-family: inherit;
+  font-size: var(--t-base);
+  line-height: 1.6;
+  color: var(--c-ink);
+  background: var(--c-bg);
+  border: 1.5px solid var(--c-border-mid);
+  border-radius: var(--r-md);
+  resize: vertical;
+  transition: border-color var(--dur-fast) var(--ease),
+              box-shadow var(--dur-fast) var(--ease);
+}
+
+.prompt-textarea::placeholder {
+  color: var(--c-ink-faint);
+}
+
+.prompt-textarea:hover {
+  border-color: rgba(124,58,237,0.4);
+}
+
+.prompt-textarea:focus {
+  outline: none;
+  border-color: var(--c-accent);
+  box-shadow: 0 0 0 3px var(--c-accent-glow);
+}
+
+.prompt-textarea[aria-invalid="true"] {
+  border-color: var(--c-red);
+  box-shadow: 0 0 0 3px rgba(220,38,38,0.12);
+}
+
+.field-hint {
+  font-size: var(--t-xs);
+  color: var(--c-ink-faint);
+  line-height: 1.4;
+}
+
+.field-error {
+  font-size: var(--t-xs);
+  color: var(--c-red);
+  font-weight: 500;
+}
+
+/* Prompt character counter */
+.prompt-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.char-count {
+  font-size: var(--t-xs);
+  color: var(--c-ink-faint);
+  font-variant-numeric: tabular-nums;
+  transition: color var(--dur-fast);
+}
+
+.char-count--warn {
+  color: var(--c-amber);
+}
+
+/* Select */
+.select-input {
+  width: 100%;
+  padding: var(--gap-sm) var(--gap-md);
+  padding-right: 2.5rem;
+  font-family: inherit;
+  font-size: var(--t-base);
+  color: var(--c-ink);
+  background-color: var(--c-bg);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%237b74a0' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right var(--gap-sm) center;
+  border: 1.5px solid var(--c-border-mid);
+  border-radius: var(--r-md);
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+  transition: border-color var(--dur-fast) var(--ease),
+              box-shadow var(--dur-fast) var(--ease);
+}
+
+.select-input:hover {
+  border-color: rgba(124,58,237,0.4);
+}
+
+.select-input:focus {
+  outline: none;
+  border-color: var(--c-accent);
+  box-shadow: 0 0 0 3px var(--c-accent-glow);
+}
+
+/* Submit button */
+.btn-generate {
+  width: 100%;
+  margin-top: var(--gap-lg);
+  padding: 0.85rem var(--gap-lg);
+  font-family: inherit;
+  font-size: var(--t-base);
+  font-weight: 600;
+  color: #ffffff;
+  background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
+  border: none;
+  border-radius: var(--r-md);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--gap-sm);
+  box-shadow: var(--shadow-accent);
+  transition: transform var(--dur-fast) var(--ease),
+              box-shadow var(--dur-fast) var(--ease),
+              opacity var(--dur-fast);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-generate::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.12) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.btn-generate:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 24px rgba(124,58,237,0.40);
+}
+
+.btn-generate:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: var(--shadow-accent);
+}
+
+.btn-generate:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+/* Spinner */
+.spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255,255,255,0.35);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

@@ -1,0 +1,135 @@
+/* ============================================================
+   Smart Imaging — Global Design System
+   Dark navy theme, purple→blue→cyan accent gradient
+   ============================================================ */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  /* ── Dark palette ────────────────────────────── */
+  --c-bg:            #0c0d1a;
+  --c-surface:       #12132a;
+  --c-surface-2:     #191a35;
+  --c-surface-3:     #1f2040;
+  --c-border:        rgba(255,255,255,0.07);
+  --c-border-mid:    rgba(255,255,255,0.13);
+  --c-border-accent: rgba(139,92,246,0.35);
+
+  /* ── Text ────────────────────────────────────── */
+  --c-ink:           #ecedf8;
+  --c-ink-mid:       #a9abcc;
+  --c-ink-faint:     #5e6080;
+
+  /* ── Accent gradient stops ───────────────────── */
+  --c-purple:        #8b5cf6;
+  --c-purple-dark:   #6d28d9;
+  --c-blue:          #3b82f6;
+  --c-cyan:          #06b6d4;
+
+  /* Derived helpers */
+  --c-accent:        var(--c-purple);
+  --c-accent-glow:   rgba(139,92,246,0.22);
+  --c-accent-tint:   rgba(139,92,246,0.12);
+  --gradient-accent: linear-gradient(135deg, #8b5cf6 0%, #3b82f6 55%, #06b6d4 100%);
+  --gradient-btn:    linear-gradient(135deg, #7c3aed 0%, #2563eb 100%);
+
+  /* ── Semantic colours ────────────────────────── */
+  --c-green:         #10b981;
+  --c-green-tint:    rgba(16,185,129,0.12);
+  --c-amber:         #f59e0b;
+  --c-amber-tint:    rgba(245,158,11,0.12);
+  --c-red:           #ef4444;
+  --c-red-tint:      rgba(239,68,68,0.12);
+
+  /* ── Type scale ──────────────────────────────── */
+  --t-xs:   0.75rem;
+  --t-sm:   0.875rem;
+  --t-base: 1rem;
+  --t-lg:   1.125rem;
+  --t-xl:   1.375rem;
+  --t-2xl:  1.75rem;
+  --t-3xl:  2.5rem;
+  --t-4xl:  3.5rem;
+
+  /* ── Spacing ─────────────────────────────────── */
+  --gap-xs: 0.375rem;
+  --gap-sm: 0.75rem;
+  --gap-md: 1.25rem;
+  --gap-lg: 2rem;
+  --gap-xl: 3rem;
+
+  /* ── Radii ───────────────────────────────────── */
+  --r-sm:   6px;
+  --r-md:   12px;
+  --r-lg:   18px;
+  --r-xl:   24px;
+  --r-pill: 999px;
+
+  /* ── Shadows (dark-mode tuned) ───────────────── */
+  --shadow-sm:     0 1px 4px rgba(0,0,0,0.4);
+  --shadow-md:     0 4px 20px rgba(0,0,0,0.45);
+  --shadow-lg:     0 12px 48px rgba(0,0,0,0.55);
+  --shadow-accent: 0 4px 24px rgba(139,92,246,0.35);
+  --shadow-glow:   0 0 40px rgba(139,92,246,0.18);
+
+  /* ── Transitions ─────────────────────────────── */
+  --ease:     cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-fast: 150ms;
+  --dur-mid:  280ms;
+  --dur-slow: 500ms;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-size: var(--t-base);
+  line-height: 1.6;
+  color: var(--c-ink);
+  background-color: var(--c-bg);
+  min-height: 100dvh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  animation: pageEntry var(--dur-slow) var(--ease) both;
+}
+
+@keyframes pageEntry {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+:focus-visible {
+  outline: 2px solid var(--c-purple);
+  outline-offset: 3px;
+  border-radius: var(--r-sm);
+}
+
+/* Stagger utility — set via inline style --i */
+.stagger {
+  animation: fadeUp var(--dur-slow) var(--ease) both;
+  animation-delay: calc(var(--i, 0) * 80ms);
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

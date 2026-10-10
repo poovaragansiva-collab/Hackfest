@@ -1,0 +1,179 @@
+/* ============================================================
+   ResourceComparison — Animated comparison bars
+   ============================================================ */
+
+.rc-panel {
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+/* Demo banner — always visible when data is simulated */
+.rc-demo-banner {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-xs);
+  padding: 7px var(--gap-md);
+  background: rgba(245,158,11,0.1);
+  border-bottom: 1px solid rgba(245,158,11,0.2);
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--c-amber);
+  letter-spacing: 0.02em;
+}
+
+.rc-demo-banner svg { flex-shrink: 0; opacity: 0.85; }
+
+.rc-body {
+  padding: var(--gap-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-md);
+}
+
+.rc-heading {
+  font-size: var(--t-sm);
+  font-weight: 600;
+  color: var(--c-ink-mid);
+}
+
+/* A single comparison row */
+.rc-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.rc-row__meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.rc-row__label {
+  font-size: var(--t-xs);
+  color: var(--c-ink-mid);
+  font-weight: 500;
+}
+
+.rc-row__value {
+  font-size: var(--t-xs);
+  color: var(--c-ink-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Track */
+.rc-track {
+  width: 100%;
+  height: 8px;
+  background: var(--c-surface-3);
+  border-radius: var(--r-pill);
+  overflow: hidden;
+}
+
+/* Fill — animated in via CSS custom property --w */
+.rc-fill {
+  height: 100%;
+  border-radius: var(--r-pill);
+  width: var(--w, 0%);
+  transition: width 800ms var(--ease);
+}
+
+.rc-fill--baseline { background: rgba(255,255,255,0.18); }
+.rc-fill--selected { background: var(--gradient-accent); }
+
+/* Savings summary card */
+.rc-savings {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-md);
+  padding: var(--gap-sm) var(--gap-md);
+  background: var(--c-green-tint);
+  border: 1px solid rgba(16,185,129,0.2);
+  border-radius: var(--r-md);
+}
+
+.rc-savings__icon {
+  font-size: 1.4rem;
+  flex-shrink: 0;
+}
+
+.rc-savings__body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.rc-savings__value {
+  font-size: var(--t-lg);
+  font-weight: 700;
+  color: var(--c-green);
+  line-height: 1;
+}
+
+.rc-savings__label {
+  font-size: var(--t-xs);
+  color: var(--c-ink-faint);
+}
+
+/* Unavailable state */
+.rc-unavailable {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-sm);
+  padding: var(--gap-sm) var(--gap-md);
+  background: var(--c-surface-2);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-md);
+  font-size: var(--t-xs);
+  color: var(--c-ink-faint);
+}
+
+/* Explanation / tooltip section */
+.rc-explain {
+  border-top: 1px solid var(--c-border);
+  padding-top: var(--gap-md);
+}
+
+.rc-explain__toggle {
+  background: none;
+  border: none;
+  color: var(--c-ink-faint);
+  font-family: inherit;
+  font-size: var(--t-xs);
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--gap-xs);
+  transition: color var(--dur-fast);
+}
+
+.rc-explain__toggle:hover { color: var(--c-ink-mid); }
+
+.rc-explain__toggle svg {
+  transition: transform var(--dur-fast) var(--ease);
+}
+
+.rc-explain__toggle[aria-expanded="true"] svg {
+  transform: rotate(180deg);
+}
+
+.rc-explain__content {
+  margin-top: var(--gap-sm);
+  font-size: var(--t-xs);
+  color: var(--c-ink-faint);
+  line-height: 1.6;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-xs);
+}
+
+.rc-explain__content p { margin: 0; }
+
+.rc-explain__content strong {
+  color: var(--c-ink-mid);
+  font-weight: 500;
+}

@@ -1,0 +1,103 @@
+/* ============================================================
+   AppHeader component styles
+   ============================================================ */
+
+.header {
+  background: var(--c-ink);
+  padding: var(--gap-lg) var(--gap-xl);
+  position: relative;
+  overflow: hidden;
+}
+
+.header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 80% at 10% 50%, rgba(124,58,237,0.25) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 60% at 90% 20%, rgba(124,58,237,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.header__inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.header__wordmark {
+  display: flex;
+  align-items: baseline;
+  gap: 0.15em;
+  margin-bottom: var(--gap-xs);
+}
+
+.header__wordmark h1 {
+  font-size: clamp(var(--t-2xl), 5vw, var(--t-4xl));
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.header__wordmark-resource {
+  color: #ffffff;
+}
+
+.header__wordmark-aware {
+  background: linear-gradient(135deg, #a78bfa 0%, #7c3aed 50%, #c4b5fd 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.header__wordmark-ai {
+  font-size: clamp(var(--t-sm), 2vw, var(--t-xl));
+  font-weight: 400;
+  color: rgba(255,255,255,0.35);
+  margin-left: 0.4em;
+  letter-spacing: 0.04em;
+  align-self: flex-end;
+  padding-bottom: 0.1em;
+}
+
+.header__subtitle {
+  font-size: var(--t-sm);
+  font-weight: 400;
+  color: rgba(255,255,255,0.5);
+  letter-spacing: 0.01em;
+  line-height: 1.4;
+}
+
+.header__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gap-xs);
+  margin-top: var(--gap-md);
+  padding: 4px 10px;
+  background: rgba(124,58,237,0.2);
+  border: 1px solid rgba(124,58,237,0.4);
+  border-radius: var(--r-pill);
+  font-size: var(--t-xs);
+  color: #c4b5fd;
+  font-weight: 500;
+}
+
+.header__badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #a78bfa;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.5; transform: scale(0.8); }
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .header {
+    padding: var(--gap-md) var(--gap-lg);
+  }
+}

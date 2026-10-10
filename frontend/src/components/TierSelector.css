@@ -1,0 +1,177 @@
+/* ============================================================
+   TierSelector — Quality / Effort Tier Cards
+   ============================================================ */
+
+.tier-selector {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-xs);
+}
+
+.tier-selector__label {
+  font-size: var(--t-sm);
+  font-weight: 500;
+  color: var(--c-ink-mid);
+  margin-bottom: 2px;
+}
+
+.tier-selector__label span {
+  color: var(--c-purple);
+  margin-left: 2px;
+}
+
+.tier-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--gap-sm);
+}
+
+/* Individual tier card */
+.tier-card {
+  position: relative;
+  background: var(--c-surface-2);
+  border: 1.5px solid var(--c-border);
+  border-radius: var(--r-lg);
+  padding: var(--gap-md);
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  color: var(--c-ink);
+  transition:
+    border-color var(--dur-fast) var(--ease),
+    background var(--dur-fast) var(--ease),
+    transform var(--dur-fast) var(--ease),
+    box-shadow var(--dur-fast) var(--ease);
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-xs);
+}
+
+.tier-card:hover:not(:disabled) {
+  border-color: var(--c-border-accent);
+  background: rgba(139,92,246,0.06);
+}
+
+.tier-card--selected {
+  border-color: var(--c-purple) !important;
+  background: rgba(139,92,246,0.10) !important;
+  box-shadow: 0 0 0 1px var(--c-purple), var(--shadow-glow);
+  transform: translateY(-1px);
+}
+
+.tier-card:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Recommendation badge */
+.tier-card__rec-badge {
+  position: absolute;
+  top: -11px;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  padding: 2px 10px;
+  background: var(--gradient-accent);
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 600;
+  border-radius: var(--r-pill);
+  letter-spacing: 0.02em;
+  pointer-events: none;
+}
+
+/* Icon */
+.tier-card__icon {
+  font-size: 1.4rem;
+  line-height: 1;
+  margin-bottom: 2px;
+}
+
+/* Tier name */
+.tier-card__name {
+  font-size: var(--t-base);
+  font-weight: 700;
+  color: var(--c-ink);
+}
+
+.tier-card--selected .tier-card__name {
+  background: var(--gradient-accent);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Tagline */
+.tier-card__tagline {
+  font-size: var(--t-xs);
+  color: var(--c-ink-faint);
+  font-weight: 400;
+}
+
+/* Description */
+.tier-card__desc {
+  font-size: var(--t-xs);
+  color: var(--c-ink-mid);
+  line-height: 1.5;
+  margin-top: var(--gap-xs);
+}
+
+/* Capability list */
+.tier-card__caps {
+  list-style: none;
+  margin-top: var(--gap-xs);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tier-card__caps li {
+  font-size: 0.72rem;
+  color: var(--c-ink-faint);
+  display: flex;
+  align-items: flex-start;
+  gap: 5px;
+  line-height: 1.4;
+}
+
+.tier-card__caps li::before {
+  content: '·';
+  color: var(--c-purple);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+/* Recommendation note below cards */
+.tier-rec-note {
+  font-size: var(--t-xs);
+  color: var(--c-ink-faint);
+  padding: var(--gap-xs) var(--gap-sm);
+  background: rgba(139,92,246,0.06);
+  border: 1px solid rgba(139,92,246,0.18);
+  border-radius: var(--r-md);
+  line-height: 1.5;
+  transition: opacity var(--dur-mid) var(--ease);
+}
+
+.tier-rec-note strong {
+  color: #a78bfa;
+  font-weight: 500;
+}
+
+/* Manual override note */
+.tier-override-note {
+  font-size: var(--t-xs);
+  color: var(--c-amber);
+  padding: var(--gap-xs) var(--gap-sm);
+  background: rgba(245,158,11,0.08);
+  border: 1px solid rgba(245,158,11,0.2);
+  border-radius: var(--r-md);
+  line-height: 1.5;
+}
+
+@media (max-width: 480px) {
+  .tier-cards {
+    grid-template-columns: 1fr;
+  }
+}

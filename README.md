@@ -77,20 +77,26 @@ All tiers use batch size 1 and the configured `Euler a` sampler.
 
 ### Resource Estimation
 
-ResourceAware calculates a transparent compute-work proxy:
+ResourceAware estimates computational workload using image resolution and sampling steps.
 
-\[
-W = \text{width} \times \text{height} \times \text{sampling steps}
-\]
+**Compute-work formula**
 
-\[
-\text{Savings (\%)} =
-100 \times \left(1-\frac{W_{\text{selected}}}{W_{\text{high}}}\right)
-\]
+`Work Units = Width × Height × Sampling Steps`
 
-The High tier is the reference configuration.
+**Estimated savings**
 
-**Important:** These figures are algorithmic workload estimates, not measured electricity consumption. They do not represent actual energy in joules or kWh. Elapsed generation time is measured separately using a monotonic timer.
+`Savings (%) = (1 − Selected Work Units / High-Tier Work Units) × 100`
+
+The **High tier** serves as the reference baseline, representing 100% of the defined workload.
+
+| Metric | What it means |
+|---|---|
+| **Work units** | Estimated computational workload for a generation |
+| **Normalized units** | Work units relative to the High-tier baseline |
+| **Estimated savings** | Percentage reduction relative to the High tier |
+| **Generation time** | Actual elapsed time measured during generation |
+
+**Transparency note:** Work units and savings are estimates, not direct measurements of electricity consumption. They do not represent energy in joules or kWh. Actual generation time is measured separately using a monotonic timer.
 
 ## Purpose Inference
 

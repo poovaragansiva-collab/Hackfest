@@ -1,266 +1,272 @@
-# ResourceAware — Resource-Aware Image Generation
+ <div align="center">
 
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-009688.svg?logo=fastapi)](https://fastapi.tiangolo.com)
-[![React](https://img.shields.io/badge/React-19.2+-61DAFB.svg?logo=react)](https://react.dev)
-[![Stable%20Diffusion](https://img.shields.io/badge/Stable%20Diffusion-AUTOMATIC1111-brightgreen.svg)](https://github.com/AUTOMATIC1111/stable-diffusion-webui)
-[![Tests](https://img.shields.io/badge/Tests-93%20Passed-success.svg)](backend/tests)
+# ResourceAware
 
-**ResourceAware** transforms generative AI image workflows for educational institutions by matching inference compute effort directly to the intended purpose of each image.
+### Purpose-Aware, Resource-Conscious AI Image Generation
 
----
+**Generate smarter. Match compute to purpose. Make resource usage transparent.**
 
-## 1. Hackathon Scenario & Problem Statement
+<img src="docs/images/resourceaware-dashboard.png" alt="ResourceAware dashboard screenshot" width="900" />
 
-### The 300-School District Challenge
-A district education office provides AI image generation to teachers across **300 schools** to create visual classroom materials (coloring sheets, flashcards, lesson diagrams, posters). Within a month, compute consumption tripled because the legacy generator treated every request identically: simple black-and-white outlines for 7-year-olds were generated with the exact same maximum compute settings as large auditorium banners.
+<br/>
 
-### Core Hackathon Constraints
-1. **Constraint 1 — Resource Transparency:**
-   - Every generation displays its **actual elapsed duration** measured with a system monotonic timer (`time.perf_counter()`).
-   - Resource estimates and relative savings are calculated against a declared **maximum High quality tier**.
-   - The exact formula and parameters are visible to the user.
-   - Measured metrics are strictly distinguished from algorithmic estimates.
-   - Zero fabricated energy readings (no fake kWh, Joules, or invented wattage).
-2. **Constraint 2 — Automatic Purpose Inference:**
-   - The intended educational purpose and recommended quality tier are inferred automatically from the user's natural-language prompt.
-   - A non-technical explanation is provided for the recommendation.
-   - The user can inspect and manually override the tier before generation.
-   - The final selected tier controls real image dimensions and sampling passes on the local generator.
+<img src="https://img.shields.io/badge/FastAPI-Backend-009688?logo=fastapi&logoColor=white" alt="FastAPI" />
+<img src="https://img.shields.io/badge/React-Frontend-61DAFB?logo=react&logoColor=black" alt="React" />
+<img src="https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white" alt="Python" />
+<img src="https://img.shields.io/badge/AI-Stable%20Diffusion-brightgreen" alt="Stable Diffusion" />
+<img src="https://img.shields.io/badge/Storage-SQLite-003B57" alt="SQLite" />
+
+</div>
 
 ---
 
-## 2. System Architecture
+## Overview
+
+ResourceAware is a resource-conscious AI image generation application that recommends computational effort according to the intended purpose of an image.
+
+Instead of generating every image with the same high-cost settings, ResourceAware analyzes the user's prompt, recommends a suitable quality tier, explains its decision, and allows the user to override the recommendation before generation.
+
+The application connects to a local AUTOMATIC1111 Stable Diffusion WebUI instance and tracks generation history using SQLite.
+
+## The Problem
+
+Educational institutions may need thousands of AI-generated visuals, from simple colouring sheets to detailed classroom posters.
+
+Applying maximum generation settings to every request can waste computational resources on tasks that do not require them. At the same time, users need visibility into the trade-off between image quality, processing time, and estimated computational workload.
+
+## Our Solution
+
+ResourceAware introduces purpose-aware generation through four steps:
+
+1. **Understand the prompt** — classify the intended use with deterministic, rule-based inference.
+2. **Recommend a quality tier** — choose Eco, Standard, or High based on the detected purpose.
+3. **Explain the recommendation** — show the rationale and generation parameters before execution.
+4. **Measure and report** — generate through the local model and display elapsed time alongside transparent resource estimates.
+
+Users retain control over the final quality tier.
+
+## Screenshots
+
+<div align="center">
+
+### Generation Workflow
+
+<img src="docs/images/resourceaware-generation.png" alt="ResourceAware image generation and result preview" width="850" />
+
+*Prompt analysis, quality selection, generation, and result preview.*
+
+### Resource Telemetry
+
+<img src="docs/images/resourceaware-dashboard.png" alt="ResourceAware resource telemetry dashboard" width="850" />
+
+*Generation history and resource metrics, based on recorded application data.*
+
+</div>
+
+> Replace these example images with screenshots of the actual application. If a separate telemetry screenshot is available, use it for the second image.
+
+## Quality Tiers
+
+| Tier | Resolution | Sampling Steps | Work Units | Savings vs. High |
+|---|---:|---:|---:|---:|
+| **Eco** | 384 × 384 | 10 | 1,474,560 | 86.6% |
+| **Standard** | 512 × 512 | 18 | 4,718,592 | 57.1% |
+| **High** | 512 × 768 | 28 | 11,010,048 | 0% — Reference |
+
+All tiers use batch size 1 and the configured `Euler a` sampler.
+
+### Resource Estimation
+
+ResourceAware calculates a transparent compute-work proxy:
+
+\[
+W = \text{width} \times \text{height} \times \text{sampling steps}
+\]
+
+\[
+\text{Savings (\%)} =
+100 \times \left(1-\frac{W_{\text{selected}}}{W_{\text{high}}}\right)
+\]
+
+The High tier is the reference configuration.
+
+**Important:** These figures are algorithmic workload estimates, not measured electricity consumption. They do not represent actual energy in joules or kWh. Elapsed generation time is measured separately using a monotonic timer.
+
+## Purpose Inference
+
+| Intended Use | Recommended Tier | Reason |
+|---|---|---|
+| Colouring sheets and simple worksheets | Eco | Simple visuals generally need less rendering effort |
+| Flashcards and basic educational graphics | Eco | Clear, compact visuals are the priority |
+| Lesson diagrams and classroom posters | Standard | Balanced detail and resolution |
+| Detailed illustrations and large-format concepts | High | More rendering effort may be appropriate |
+| Ambiguous prompts | Standard | A balanced default |
+
+Purpose inference uses deterministic pattern matching and does not require an external language-model API.
+
+## Architecture
 
 ```text
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                       ResourceAware Web Application                         │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│  React 19 Frontend (Vite, http://127.0.0.1:5173)                           │
-│  ├── Live Purpose Inference & Tier Recommendation Hook                      │
-│  ├── Quality Tier Selector (Eco / Standard / High) with Override Badge      │
-│  ├── Transparent Parameter Preview Strip                                    │
-│  ├── Real-time Generation Preview, Download & Side-by-Side Comparison       │
-│  └── Telemetry Dashboard & 300 Schools District Simulation                  │
-│                                      │                                      │
-│                                HTTP POST/GET                                │
-│                                      ▼                                      │
-│  FastAPI Backend (Python 3.12, http://127.0.0.1:8000)                       │
-│  ├── /api/v1/infer-purpose  : Deterministic rule-based purpose classifier   │
-│  ├── /api/v1/tiers          : Centralized tier parameter specifications     │
-│  ├── /api/v1/generate       : Concurrency-guarded image generation route    │
-│  ├── /api/v1/outputs/{file} : Secure image file serving (traversal guarded) │
-│  ├── /api/v1/history        : Real generation history (SQLite persistence)  │
-│  ├── /api/v1/analytics      : Aggregated metrics & genuine empty states     │
-│  └── Concurrency Guard      : asyncio.Lock() preventing GPU VRAM exhaustion │
-│                                      │                                      │
-│                                HTTP POST                                    │
-│                                      ▼                                      │
-│  Local Generator: AUTOMATIC1111 Stable Diffusion WebUI (Port 7860)           │
-│  ├── Endpoint: POST /sdapi/v1/txt2img                                       │
-│  ├── Model: Checkpoint (e.g. v1-5-pruned-emaonly.safetensors)               │
-│  └── Hardware: NVIDIA RTX 2050 (4 GB VRAM) with --medvram                   │
-└─────────────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────┐
+│       React + Vite UI        │
+│ Prompt · Tier · Results      │
+└──────────────┬───────────────┘
+               │ HTTP
+               ▼
+┌──────────────────────────────┐
+│        FastAPI Backend       │
+│                              │
+│ Purpose Inference            │
+│ Tier Configuration           │
+│ Resource Estimation          │
+│ Generation API               │
+│ History & Analytics          │
+└──────────┬─────────┬─────────┘
+           │         │
+           ▼         ▼
+┌────────────────┐ ┌──────────┐
+│ AUTOMATIC1111  │ │  SQLite  │
+│ Stable Diffusion│ │ History  │
+└────────────────┘ └──────────┘
 ```
 
----
+## Technology Stack
 
-## 3. Real Quality Tiers & Parameter Specifications
+- **Frontend:** React, Vite, JavaScript
+- **Backend:** Python, FastAPI
+- **Image generation:** AUTOMATIC1111 Stable Diffusion WebUI API
+- **Persistence:** SQLite
+- **Testing:** pytest, frontend linting, production build
 
-To prevent Out-Of-Memory (OOM) failures on 4 GB GPUs while ensuring noticeable quality differentiation, parameters are managed centrally:
-
-| Tier | Width | Height | Sampling Steps | Batch Size | Compute-Work Units | Normalized Units | Savings vs High | Optimal Educational Use Case |
-|---|---:|---:|---:|---:|---:|---:|---:|---|
-| **Eco** | 384 px | 384 px | 10 | 1 | 1,474,560 | **0.1339** | **86.6%** | Colouring sheets, flashcards, simple worksheets |
-| **Standard** | 512 px | 512 px | 18 | 1 | 4,718,592 | **0.4286** | **57.1%** | Lesson diagrams, classroom posters, slides |
-| **High** | 512 px | 768 px | 28 | 1 | 11,010,048 | **1.0000** | **0.0%** *(Reference)* | Large printed banners, auditorium displays |
-
-*Note: All tiers use `Euler a` sampler and the active local SD checkpoint.*
-
----
-
-## 4. Resource Estimation Methodology
-
-### Transparent Compute-Work Proxy Formula
-Because Stable Diffusion inference workload scales with pixel resolution and denoising passes, ResourceAware defines a transparent, reproducible algorithmic proxy:
-
-$$\text{work\_units} = \text{width} \times \text{height} \times \text{sampling\_steps}$$
-
-Against the declared reference High configuration ($512 \times 768 \times 28 = 11,010,048\text{ units}$):
-
-$$\text{normalized\_resource\_units} = \frac{\text{work\_units}}{\text{reference\_high\_units}}$$
-
-$$\text{savings\_percent} = 100 \times \left(1 - \frac{\text{work\_units}}{\text{reference\_high\_units}}\right)$$
-
-### Strict Integrity Disclosure
-- **Proxy Metric vs. Direct Energy:** These numbers represent **Estimated compute-work units**, not physical energy (Joules or kWh). Stable Diffusion inference does not scale perfectly linearly with pixels $\times$ steps, so this value is presented as an engineering proxy.
-- **Measured Elapsed Time:** Displayed separately based on a monotonic system clock (`time.perf_counter()`).
-- **No Mock Data:** Historical dashboards and session metrics reflect real executed generations stored in the local SQLite database (`backend/data/generations.db`). When no records exist, the UI shows a genuine empty state.
-
----
-
-## 5. Automatic Purpose Inference Engine
-
-The backend evaluates natural-language prompts using deterministic pattern-matching rules and confidence scoring without external API dependencies:
-
-| Category | Typical Triggers | Inferred Purpose | Tier | Rationale |
-|---|---|---|---|---|
-| **Colouring Sheets** | `colouring sheet`, `coloring book`, `outline`, `black and white`, `line art`, `for 7-year-old` | Children's colouring sheet | **Eco** | Simple outlines and black-and-white output do not require maximum rendering effort. |
-| **Worksheets** | `worksheet`, `handout`, `activity sheet`, `kindergarten activity` | Classroom worksheet | **Eco** | Classroom worksheets prioritize clear subject identification over fine detail. |
-| **Flashcards** | `flashcard`, `vocabulary card`, `picture card` | Educational flashcard | **Eco** | Flashcard visual prompts need clean iconography rather than high-density rendering. |
-| **Lesson Diagrams** | `diagram`, `infographic`, `flowchart`, `anatomy diagram` | Lesson diagram | **Standard** | Diagrams require balanced resolution and step count for legible structures. |
-| **Posters** | `educational poster`, `wall chart`, `classroom poster`, `water cycle` | Educational poster | **Standard** | Posters need readable composition and moderate detail without maximum expensive settings. |
-| **Printed Banners** | `banner`, `large print`, `school exhibition`, `auditorium backdrop`, `billboard` | Large-format printed banner | **High** | Large physical print formats justify high resolution and maximum sampling passes. |
-| **Detailed Illustrations** | `highly detailed`, `intricate artwork`, `oil painting`, `masterpiece` | Detailed illustration | **High** | Fine artistic textures require deeper denoising steps. |
-| **Ambiguous Prompts** | General text without educational context | General educational graphic | **Standard** | Conservative default ensuring acceptable quality without wasting resources. |
-
----
-
-## 6. Local Setup & Execution Guide (Windows)
+## Getting Started
 
 ### Prerequisites
-- Windows 10/11 64-bit
-- NVIDIA GPU (RTX 2050 4 GB VRAM or higher) with CUDA drivers
-- Python 3.12+ (installed in virtual environment `.venv`)
-- Node.js 18+ and npm
-- Local AUTOMATIC1111 Stable Diffusion WebUI
 
----
+- Python 3.12 or another version supported by the project dependencies
+- Node.js and npm
+- AUTOMATIC1111 Stable Diffusion WebUI
+- A compatible local model and sufficient GPU memory
 
-### Step 1: Launch Local AUTOMATIC1111 WebUI with `--api`
-The WebUI must be launched with the `--api` flag so that ResourceAware can communicate with `POST /sdapi/v1/txt2img`.
+### 1. Clone the repository
 
-1. Open your WebUI installation folder (e.g. `D:\stable-diffusion-webui-master`).
-2. Open `webui-user.bat` in a text editor.
-3. Update the `COMMANDLINE_ARGS` line:
-   ```bat
-   set COMMANDLINE_ARGS=--api --medvram --xformers
-   ```
-   *(Note: `--medvram` is critical for 4 GB GPUs like the RTX 2050 to prevent CUDA out-of-memory errors).*
-4. Run `webui-user.bat`.
-5. Verify in browser:
-   - Root UI: [http://127.0.0.1:7860](http://127.0.0.1:7860)
-   - API Docs: [http://127.0.0.1:7860/docs](http://127.0.0.1:7860/docs)
-6. Keep this terminal window open.
-
----
-
-### Step 2: Configure Environment
-Copy `.env.example` to `.env` in the project root:
-
-```ini
-APP_ENV=development
-APP_HOST=127.0.0.1
-APP_PORT=8000
-CORS_ORIGINS=http://localhost:3000,http://localhost:5173,http://127.0.0.1:5173
-
-ACTIVE_PROVIDER=automatic1111
-SD_WEBUI_URL=http://127.0.0.1:7860
-SD_TIMEOUT_SECONDS=180
-SD_DEFAULT_SAMPLER="Euler a"
-
-DATABASE_PATH=backend/data/generations.db
+```bash
+git clone https://github.com/poovaragansiva-collab/Hackfest.git
+cd Hackfest
 ```
 
----
+### 2. Configure the backend
 
-### Step 3: Start FastAPI Backend
-In a PowerShell terminal:
+Create and activate a virtual environment:
+
 ```powershell
-d:\HACKFEST_!\.venv\Scripts\uvicorn.exe backend.app.main:app --host 127.0.0.1 --port 8000 --reload
-```
-Verify health:
-```powershell
-Invoke-RestMethod -Uri "http://127.0.0.1:8000/health"
-```
-Output:
-```json
-{
-  "status": "healthy",
-  "version": "0.1.0",
-  "active_provider": "automatic1111",
-  "webui_reachable": true,
-  "api_enabled": true,
-  "loaded_model": "v1-5-pruned-emaonly.safetensors"
-}
+py -3.12 -m venv .venv
+.\.venv\Scripts\Activate.ps1
 ```
 
----
+Install the backend dependencies and create your environment file:
 
-### Step 4: Start React Frontend
-In a second PowerShell terminal:
 ```powershell
-cd d:\HACKFEST_!\frontend
+pip install -r backend/requirements.txt
+Copy-Item .env.example .env
+```
+
+Review `.env` and configure the local Stable Diffusion endpoint, database path, and output directory as needed.
+
+### 3. Start Stable Diffusion WebUI
+
+Configure AUTOMATIC1111 to enable its API. For a low-memory NVIDIA GPU, `--medvram` may help:
+
+```bat
+set COMMANDLINE_ARGS=--api --medvram
+```
+
+Start the WebUI and verify that it is accessible at:
+
+`http://127.0.0.1:7860`
+
+### 4. Start the backend
+
+From the repository root:
+
+```powershell
+python -m uvicorn backend.app.main:app --host 127.0.0.1 --port 8000 --reload
+```
+
+Check the health endpoint:
+
+`http://127.0.0.1:8000/health`
+
+### 5. Start the frontend
+
+Open another terminal:
+
+```powershell
+cd frontend
+npm install
 npm run dev
 ```
-Open [http://127.0.0.1:5173](http://127.0.0.1:5173) in your browser.
 
----
+Open the local URL printed by Vite, typically:
 
-## 7. Automated Test Suite
+`http://127.0.0.1:5173`
 
-Run the full pytest suite:
+Keep the backend and local image-generation service running while using the application.
+
+## Testing
+
+Run the backend tests from the repository root:
+
 ```powershell
-d:\HACKFEST_!\.venv\Scripts\pytest.exe -v
+python -m pytest backend/tests -v
 ```
 
-### Verified Test Areas
-- **Purpose Inference (`test_purpose_inference.py`):** 9 acceptance tests verifying coloring sheets, flashcards, worksheets, diagrams, posters, banners, and ambiguity handling.
-- **Phase 2 & Phase 3 Constraints (`test_phase2_phase3_constraints.py`):** 8 tests validating cost/compute display alongside savings vs High reference, calculation explanation disclosure, natural-language tier proposing, non-technical reasoning, and manual user override persistence.
-- **Tier Configuration (`test_tier_configuration.py`):** Asserts Eco ($384\times384, 10$), Standard ($512\times512, 18$), and High ($512\times768, 28$) produce distinct API payloads.
-- **Resource Estimation (`test_estimation.py`):** Verifies reference High normalization ($1.0$), High savings ($0\%$), Eco savings ($86.6\%$), and formula reproducibility.
-- **AUTOMATIC1111 Provider Adapter (`test_automatic1111_provider.py` & `test_generate_api.py`):** Tests success response parsing, connection timeout handling, WebUI missing `--api` error detection, loopback SSRF guards, CUDA OOM recovery, and offline 503 error responses (zero silent fallback to mock data).
-- **Controlled Output Artifacts & Storage (`test_storage.py`):** Verifies controlled output saving (`/api/v1/outputs/{job_id}.png`), secure file serving, path traversal protection, genuine SQLite persistence, and authentic empty states.
-- **End-to-End Integration Flow (`test_integration_flow.py`):** Full pipeline test from prompt to API payload, response schema, and database persistence.
+Run frontend checks:
 
-**Result: 93 passed, 1 skipped (live local WebUI smoke test safely skipped when WebUI is offline or started without `--api`).**
+```powershell
+cd frontend
+npm run lint
+npm run build
+```
+
+Tests may mock external services to verify application behavior. A successful automated test suite does not by itself prove that the local image-generation model is available; verify the live WebUI connection separately.
+
+## Responsible Reporting
+
+ResourceAware distinguishes between:
+
+- **Measured data:** actual elapsed generation time and recorded generation history.
+- **Estimated data:** normalized compute-work units and savings calculated against the High reference.
+- **User-selected settings:** the final tier and parameters used for generation.
+
+No physical energy measurements are claimed unless actual hardware power measurements are integrated.
+
+District-wide savings are a potential application of this approach, not a measured result from 300 schools.
+
+## Current Limitations
+
+- Purpose inference is rule-based and may misclassify unusual prompts.
+- The compute-work formula is a simplified proxy and does not capture every factor affecting GPU workload.
+- Generation performance depends on the local model, GPU, sampler, and runtime configuration.
+- A local Stable Diffusion service is required for real image generation.
+
+## Future Improvements
+
+- Hardware-level power measurement and energy reporting
+- More robust purpose classification
+- Quality evaluation across different tiers
+- Multi-user deployment and access control
+- Real-world institutional workload evaluation
+
+## Team
+
+**ROTCREW** — Hackathon Project
+
+Built to explore more transparent and purpose-aware use of generative AI.
 
 ---
 
-## 8. Hackathon Demonstration Scenario
+<div align="center">
 
-Follow this 6-step walkthrough for a complete live demonstration:
+**ResourceAware — Use the right amount of compute for the task.**
 
-1. **Test Prompt 1 (Colouring Sheet — Eco Recommendation):**
-   - Enter prompt: `"Make a simple black-and-white colouring sheet of a butterfly for a seven-year-old."`
-   - Observe live inference: Inferred Purpose = **Children's colouring sheet**, Recommended Tier = **Eco (0.134 units)**.
-   - Click **Generate Image**.
-   - Review results: Generated image displayed, actual elapsed time measured, compute-work units = **0.134 units** (saving **86.6%** vs High).
-2. **User Override Demonstration:**
-   - In the tier selector, manually click **High**.
-   - Notice the visible **User Override** alert badge.
-   - Parameter preview updates to $512 \times 768$, 28 steps (1.000 unit).
-   - Generate again to show that user choice dictates real parameters.
-3. **Test Prompt 2 (Educational Poster — Standard Recommendation):**
-   - Enter prompt: `"Create an illustrated educational poster about the water cycle."`
-   - Observe live inference: Inferred Purpose = **Educational poster**, Recommended Tier = **Standard (0.429 units, 57.1% savings)**.
-   - Generate and verify $512 \times 512$ at 18 steps.
-4. **Test Prompt 3 (Exhibition Banner — High Recommendation):**
-   - Enter prompt: `"Create a highly detailed illustration for a large printed school exhibition banner."`
-   - Observe live inference: Inferred Purpose = **Large-format printed banner**, Recommended Tier = **High (1.000 unit)**.
-   - Rationale explains: *"The intended print use and detail requirements justify greater rendering effort."*
-5. **Compare Real Measured Latency vs. Transparent Proxy Units:**
-   - Open the **Expandable Formula & Assumptions** panel on the result card.
-   - Review exact math: $\text{Width} \times \text{Height} \times \text{Steps} / 11,010,048$.
-   - Note the strict distinction between measured seconds and calculated proxy units.
-6. **Telemetry & District 300 Schools Projection:**
-   - Click the **Resource Telemetry** navigation tab.
-   - View genuine session metrics (counts, total units saved, average measured duration).
-   - Inspect the interactive **300 Schools District Simulation**: by defaulting simple classroom requests to Eco (0.134) instead of naive High (1.000), 300 schools save over **70% of GPU compute load** every month.
-
----
-
-## 9. Hardware Constraints & Troubleshooting
-
-### Hardware Constraints (RTX 2050 4 GB VRAM)
-- **Concurrency Serialization:** An asynchronous lock (`asyncio.Lock()`) in the backend provider queues concurrent requests to avoid GPU memory crashes.
-- **Resolution Ceilings:** High tier is set to $512 \times 768$ at 28 steps. Higher resolutions like $1024 \times 1024$ without tiling cause CUDA Out-of-Memory on 4 GB cards.
-
-### Troubleshooting Quick Reference
-
-| Symptom | Cause | Solution |
-|---|---|---|
-| **HTTP 503: Connection Refused** | WebUI is not running on `127.0.0.1:7860`. | Run `webui-user.bat` and keep the terminal open. |
-| **HTTP 503: WebUI is running without `--api`** | WebUI was started without the `--api` flag (returns 404 on `/sdapi/v1/*`). | Add `set COMMANDLINE_ARGS=--api --medvram` to `webui-user.bat` and restart WebUI. |
-| **HTTP 500: CUDA Out of Memory** | GPU VRAM exhausted. | Ensure `--medvram` or `--lowvram` is in `COMMANDLINE_ARGS`, and select Eco or Standard tier. |
-| **Frontend shows "Offline" badge** | FastAPI backend is not running on port 8000. | Run `uvicorn backend.app.main:app --host 127.0.0.1 --port 8000 --reload`. |
+</div>
